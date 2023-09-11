@@ -17,12 +17,11 @@ engine = database.engine
 
 models.Base.metadata.create_all(bind=engine)
 
-### app1
-app1 = FastAPI()
+# app1 basic + frontend
+app_server = FastAPI()
 
 # Đường dẫn tới thư mục chứa các tệp tĩnh
-app1.mount("/static", StaticFiles(directory="static"), name="static")
-
+app_server.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # Dependency
@@ -34,187 +33,260 @@ def get_db():
         db.close()
 
 # homepage
-@app1.get("/", response_class=HTMLResponse)
+
+
+@app_server.get("/", response_class=HTMLResponse)
 async def homepage(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 # end homepage
 
-# page_all_users
-@app1.get("/users/", response_class=HTMLResponse, response_model=list[schemas.User])
-def read_users(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db), ):
-    users = crud.get_users(db, skip=skip, limit=limit)
-    print (users)
-    return templates.TemplateResponse("users.html", {"users": users, "request": request})
-# end page_all_users
 
-# create  users
-@app1.post("/users/", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user:
+### Customers
+
+# get customers
+@app_server.get("/customers/", response_class=HTMLResponse, response_model=list[schemas.Customer])
+def read_customers(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db), ):
+    customers = crud.get_customers(db, skip=skip, limit=limit)
+    return templates.TemplateResponse("customers.html", {"customers": customers, "request": request})
+
+# create  customer
+
+@app_server.post("/Customers/create-customer", response_model=schemas.Customer)
+def create_customer(customer: schemas.CustomerCreate, db: Session = Depends(get_db)):
+    db_customer = crud.get_customer_by_email(db, email=customer.email)
+    if db_customer:
         raise HTTPException(status_code=400, detail="Email already registered")
-    
-    return crud.create_user(db=db, user=user)
+
+    return crud.create_customer(db=db, customer=customer)
+
+# get a customer
 
 
+@app_server.get("/customers/{customer_id}", response_class=HTMLResponse, response_model=schemas.Customer)
+def read_customer(request: Request, customer_id: int, db: Session = Depends(get_db)):
+    db_customer = crud.get_customer(db, customer_id=customer_id)
+    if db_customer is None:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    return templates.TemplateResponse("customer.html", {"customer": db_customer, "request": request})
+
+# put customer
 
 
-# get one user
-@app1.get("/users/{user_id}", response_class=HTMLResponse, response_model=schemas.User)
-def read_user(request: Request, user_id: int, db: Session = Depends(get_db)):
-    db_user = crud.get_user(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return templates.TemplateResponse("user.html", {"user": db_user, "request": request})
+@app_server.put("/customers/{customer_id}", response_model=schemas.Customer)
+def update_customer(customer_id: int, customer: schemas.Customer, db: Session = Depends(get_db)):
+    db_customer = crud.get_customer(db, customer_id=customer_id)
+    if db_customer is None:
+        raise HTTPException(status_code=404, detail="customer not found")
 
-# put one user
-@app1.put("/users/{user_id}", response_model=schemas.User)
-def update_user(user_id: int, user: schemas.User, db: Session = Depends(get_db)):
-    db_user = crud.get_user(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    updated_user = crud.update_user(db, user_id=user_id, user_new=user)
-    return updated_user
+    updated_customer = crud.update_customer(db, customer_id=customer_id, customer_new=customer)
+    return updated_customer
 
-# change pass user
-@app1.put("/users/{user_id}/change_pass", response_model=schemas.ChangePassword)
-def change_pass(user_id: int, user: schemas.ChangePassword, db: Session = Depends(get_db)):
-    db_user = crud.get_user(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    change_pass_user = crud.change_pass_user(db, user_id=user_id, use_new=user)
-    
-    return change_pass_user
+# change pass customer
 
-#create item for user
-@app1.post("/users/{user_id}/items/", response_model=schemas.Item)
-def create_item_for_user(
-    user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
-):
-    return crud.create_user_item(db=db, item=item, user_id=user_id)
+
+@app_server.put("/customers/{customer_id}/change_pass", response_model=schemas.ChangePassword)
+def change_pass(customer_id: int, customer: schemas.ChangePassword, db: Session = Depends(get_db)):
+    db_customer = crud.get_customer(db, customer_id=customer_id)
+    if db_customer is None:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    change_pass_customer = crud.change_pass_customer(db, customer_id=customer_id, use_new=customer)
+
+    return change_pass_customer
+
+
+#### ITEMS
+
 
 # get all items
-@app1.get("/items/", response_class=HTMLResponse, response_model=list[schemas.Item])
+
+@app_server.get("/items/", response_class=HTMLResponse, response_model=list[schemas.Item])
 def read_items(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_items(db, skip=skip, limit=limit)
     return templates.TemplateResponse("items.html", {"items": items, "request": request})
 
 # get one item
-@app1.get("/items/{item_id}",response_class=HTMLResponse, response_model=schemas.Item)
+
+
+@app_server.get("/items/{item_id}", response_class=HTMLResponse, response_model=schemas.Item)
 def get_item(request: Request, item_id: int, db: Session = Depends(get_db)):
     db_item = crud.get_item(db, item_id=item_id)
-    print (db_item.id)
+    print(db_item.id)
     if db_item is None:
         raise HTTPException(status_code=404, detail="Item not found")
     return templates.TemplateResponse("item.html", {"item": db_item, "request": request})
 
+
 # put one item
-@app1.put("/items/{item_id}", response_model=schemas.ItemBase)
-def update_user(item_id: int, item: schemas.ItemBase, db: Session = Depends(get_db)):
+
+@app_server.put("/items/{item_id}", response_model=schemas.ItemBase)
+def update_item(item_id: int, item: schemas.ItemBase, db: Session = Depends(get_db)):
     db_item = crud.get_item(db, item_id=item_id)
     if db_item is None:
         raise HTTPException(status_code=404, detail="Item not found")
-    
+
     updated_item = crud.update_item(db, item_id=item_id, item_new=item)
     return updated_item
 
-### app2
-app2 = FastAPI()
+# page 404
 
+
+@app_server.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    return templates.TemplateResponse("404.html", {"request": request}, status_code=exc.status_code)
+
+
+@app_server.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return templates.TemplateResponse("404.html", {"request": request}, status_code=exc.status_code)
+# end page 404
+
+#####################################################################################################################################
+# app_data (admin page)
+app_data = FastAPI()
+app_data.mount("/static", StaticFiles(directory="static"), name="static")
+# Dependency
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # Main
-@app2.get("/")
-async def root():
-    return {"message": "Hello from FastAPI on port 8080"}
 
-# create nhiều users
-@app2.post("/users/", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+# homepage
+@app_data.get("/", response_class=HTMLResponse)
+async def homepage(request: Request):
+    print("page home")
+    return templates.TemplateResponse("admin-home.html", {"request": request})
+
+# sign-in
+@app_data.get("/sign-in/", response_class=HTMLResponse)
+async def sign_in(request: Request):
+    return templates.TemplateResponse("admin-signin.html", {"request": request})
+
+@app_data.post("/sign-in/", response_class=HTMLResponse)
+def create_user(request: Request, user: schemas.UserCreate, db: Session = Depends(get_db)):
+    print("done")
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    
+
     return crud.create_user(db=db, user=user)
-
-# get all users
-@app2.get("/users/", response_model=list[schemas.User])
-def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users = crud.get_users(db, skip=skip, limit=limit)
-    return users
-
-# get one user
-@app2.get("/users/{user_id}", response_model=schemas.User)
-def read_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = crud.get_user(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return db_user
-
-# put one user
-@app2.put("/users/{user_id}", response_model=schemas.User)
-def update_user(user_id: int, user: schemas.User, db: Session = Depends(get_db)):
-    db_user = crud.get_user(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
     
-    updated_user = crud.update_user(db, user_id=user_id, user_new=user)
-    return updated_user
 
-# change pass user
-@app2.put("/users/{user_id}/change_pass", response_model=schemas.ChangePassword)
-def change_pass(user_id: int, user: schemas.ChangePassword, db: Session = Depends(get_db)):
-    db_user = crud.get_user(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    change_pass_user = crud.change_pass_user(db, user_id=user_id, use_new=user)
     
-    return change_pass_user
 
-#create item for user
-@app2.post("/users/{user_id}/items/", response_model=schemas.Item)
-def create_item_for_user(
-    user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
+
+# sign-up
+@app_data.get("/sign-up/", response_class=HTMLResponse)
+async def sign_in(request: Request):
+    return templates.TemplateResponse("admin-signup.html", {"request": request})
+
+# create nhiều Customers
+
+
+@app_data.post("/Customers/", response_model=schemas.Customer)
+def create_Customer(Customer: schemas.CustomerCreate, db: Session = Depends(get_db)):
+    db_Customer = crud.get_customer_by_email(db, email=Customer.email)
+    if db_Customer:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    return crud.create_customer(db=db, Customer=Customer)
+
+# get all Customers
+
+
+@app_data.get("/Customers/", response_model=list[schemas.Customer])
+def read_Customers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    Customers = crud.get_customers(db, skip=skip, limit=limit)
+    return Customers
+
+# get one Customer
+
+
+@app_data.get("/Customers/{Customer_id}", response_model=schemas.Customer)
+def read_Customer(Customer_id: int, db: Session = Depends(get_db)):
+    db_Customer = crud.get_customer(db, Customer_id=Customer_id)
+    if db_Customer is None:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    return db_Customer
+
+# put one Customer
+
+
+@app_data.put("/Customers/{Customer_id}", response_model=schemas.Customer)
+def update_Customer(Customer_id: int, Customer: schemas.Customer, db: Session = Depends(get_db)):
+    db_Customer = crud.get_customer(db, Customer_id=Customer_id)
+    if db_Customer is None:
+        raise HTTPException(status_code=404, detail="Customer not found")
+
+    updated_Customer = crud.update_customer(db, Customer_id=Customer_id, Customer_new=Customer)
+    return updated_Customer
+
+# change pass Customer
+
+
+@app_data.put("/Customers/{Customer_id}/change_pass", response_model=schemas.ChangePassword)
+def change_pass(Customer_id: int, Customer: schemas.ChangePassword, db: Session = Depends(get_db)):
+    db_Customer = crud.get_customer(db, Customer_id=Customer_id)
+    if db_Customer is None:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    change_pass_Customer = crud.change_pass_customer(db, Customer_id=Customer_id, use_new=Customer)
+
+    return change_pass_Customer
+
+# create item for Customer
+
+
+@app_data.post("/Customers/{Customer_id}/items/", response_model=schemas.Item)
+def create_item_for_Customer(
+    Customer_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
 ):
-    return crud.create_user_item(db=db, item=item, user_id=user_id)
+    return crud.create_customer_item(db=db, item=item, Customer_id=Customer_id)
 
 # get all items
-@app2.get("/items/", response_model=list[schemas.Item])
+
+
+@app_data.get("/items/", response_model=list[schemas.Item])
 def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_items(db, skip=skip, limit=limit)
     return items
 
 # get one item
-@app2.get("/items/{item_id}", response_model=schemas.Item)
+
+
+@app_data.get("/items/{item_id}", response_model=schemas.Item)
 def read_item(item_id: int, db: Session = Depends(get_db)):
-    db_item = crud.get_item(db, item_id==item_id)
+    db_item = crud.get_item(db, item_id == item_id)
     if db_item is None:
         raise HTTPException(status_code=404, detail="Item not found")
     return db_item
 
 # put one item
-@app2.put("/items/{item_id}", response_model=schemas.ItemBase)
-def update_user(item_id: int, item: schemas.ItemBase, db: Session = Depends(get_db)):
+
+
+@app_data.put("/items/{item_id}", response_model=schemas.ItemBase)
+def update_Customer(item_id: int, item: schemas.ItemBase, db: Session = Depends(get_db)):
     db_item = crud.get_item(db, item_id=item_id)
     if db_item is None:
         raise HTTPException(status_code=404, detail="Item not found")
-    
+
     updated_item = crud.update_item(db, item_id=item_id, item_new=item)
     return updated_item
 
-# if __name__ == "__main__":
-#     uvicorn.run(app1, host="127.0.0.1", port=8000)
-#     uvicorn.run(app2, host="127.0.0.1", port=8080)
-
-#### run uvicorn main:app1 --reload --port 8000////uvicorn main:app2 --reload --port 8080
-
 # page 404
-@app1.exception_handler(StarletteHTTPException)
+
+
+@app_data.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     return templates.TemplateResponse("404.html", {"request": request}, status_code=exc.status_code)
 
 
-@app1.exception_handler(HTTPException)
+@app_data.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     return templates.TemplateResponse("404.html", {"request": request}, status_code=exc.status_code)
-# end page 404
+
+# run uvicorn main:app1 --reload --port 8000////uvicorn main:app2 --reload --port 8080

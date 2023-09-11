@@ -1,8 +1,8 @@
-# test-fastapi3
+<!-- # test-fastapi3 -->
 test-fastapi2 + database domain
 
 local ubuntu
-# Ubuntu
+<!-- # Ubuntu -->
 ///set up///
 -create env:
     python3 -m venv test-fastapi 

@@ -17,22 +17,31 @@ class Item(ItemBase):
         from_attributes = True
 
 
-class UserBase(BaseModel):
+class CustomerBase(BaseModel):
     email: str
 
 
-class UserCreate(UserBase):
+class CustomerCreate(CustomerBase):
     password: str
 
-class ChangePassword(UserCreate):
+class ChangePassword(CustomerCreate):
     old_password: str
     class Config:
         extra = "allow"
 
-class User(UserBase):
+class Customer(CustomerBase):
     id: int
     is_active: bool
     items: list[Item] = []
 
     class Config:
         from_attributes = True
+#################################
+# khai bao cho cac admin
+
+class AdminBase(BaseModel):
+    email: str
+    password : str
+class AdminCreate(CustomerBase):
+    name : str
+    create_at: str
