@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Items List</title>
+    <link rel="stylesheet" href="../static/css/items.css">  
+    <style>
+
+    </style>
+</head>
+<body>
+    <h1>Items List</h1>
+    <button onclick="window.location.href = '/'">Back</button>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Image</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td><a class="title-items" href="/items/{{ item.id }}">{{ item.title }}</a></td>
+            <td>{{ item.description }}</td>
+            <td><img src="../static/images/item{{item.id}}.jpg" alt="tho-con" style="width:100px;height:150px;"></td> 
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

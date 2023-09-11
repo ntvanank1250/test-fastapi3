@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Item Details</title>
+    <style>
+        .title-user {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+        }
+        .description {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Details</h1>
+    <button onclick="window.location.href = '/users'">Back</button>
+
+    <table>
+        <tr>
+            <th>Email:</th>
+            <th>{{ user.email }}</th>
+        </tr>
+        <tr>
+            <th>Active:</th>
+            <th>{{ "Activate" if user.is_active|int == 1 else "Deactivate" }}</th>
+        </tr>
+    </table>
+</body>
+</html>

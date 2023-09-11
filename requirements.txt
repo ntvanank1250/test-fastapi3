@@ -1,0 +1,6 @@
+fastapi;
+sqlalchemy;
+sqlalchemy.orm;
+uvicorn;
+pydantic;
+jinja2;

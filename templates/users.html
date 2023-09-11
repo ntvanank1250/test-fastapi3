@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User List</title>
+    <link rel="stylesheet" href="../static/css/users.css">  
+
+</head>
+<body>
+    <h1>User List</h1>
+    <div class="add-user-button">
+        <button onclick="window.location.href = '/'">Back</button>
+        <button onclick="window.location.href='/add-user'">Thêm User</button>
+    </div>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Activate</th>
+            <th>Avatar</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td><a class="title-users" href="/users/{{ user.id }}">{{ user.email }}</a></td>
+            <td>{{ "Activate" if user.is_active|int == 1 else "Deactivate" }}</td> 
+            <td><img src="../static/images/girl{{user.id}}.jpg" alt="tho-con" style="width:100px;height:100px;"></td>     
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

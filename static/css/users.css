@@ -1,0 +1,25 @@
+.title-users {
+    text-decoration: none; /* Loại bỏ gạch chân */
+    color: #000; /* Màu chữ */
+    font-weight: bold; /* Đậm chữ */
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: center;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+.add-user-button {
+    text-align: left;
+}
+
+.add-user-button button {
+    margin-top: 10px;
+}

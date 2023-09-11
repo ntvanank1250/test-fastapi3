@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Item Details</title>
+    <style>
+        .title-item {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .description {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Item Details</h1>
+    <button onclick="window.location.href = '/items'">Back</button>
+
+    <h2 class="title-item">{{ item.id }}. {{ item.title }}</h2>
+    <table>
+        <tr>
+            <th>Description:</th>
+            <th>{{ item.description }}</th>
+        </tr>
+    </table>
+</body>
+</html>
