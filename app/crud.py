@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas
 
-# Customer
+# CUSTOMER
 
 
 def get_customer(db: Session, customer_id: int):
@@ -56,7 +56,7 @@ def change_pass_customer(db: Session, customer_id: int, use_new: schemas.ChangeP
 
     return use_new
 
-# Item
+# ITEM
 
 
 def get_items(db: Session, skip: int = 0, limit: int = 100):
@@ -75,3 +75,79 @@ def update_item(db: Session, item_id: int, item_new: schemas.ItemBase):
         db.commit()
         db.refresh(item)
     return item
+
+# USER
+
+def get_user(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.id == user_id).first()
+
+
+def get_user_by_email(db: Session, email: str):
+    return db.query(models.User).filter(models.User.email == email).first()
+
+
+def get_users(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.User).offset(skip).limit(limit).all()
+
+
+def create_user(db: Session, user: schemas.UserCreate):
+    db_user = models.User(
+            name = user.name,
+            email = user.email,
+            password = user.password,
+            create_at = user.create_at)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+# Domain
+
+def get_domain(db: Session, domain_id: int):
+    return db.query(models.Domain).filter(models.Domain.id == domain_id).first()
+
+
+def get_domains(db: Session,user_id, skip: int = 0, limit: int = 100):
+    query = db.query(models.Domain)
+    query = query.filter(models.Domain.user_id == user_id)
+    query = query.offset(skip).limit(limit)
+
+    return query.all()
+
+
+def create_domain(db: Session, domain: schemas.DomainCreate):
+    db_domain = models.Domain(
+            name = domain.name,
+            status = domain.status,
+            user_id = domain.user_id,
+            create_at = domain.create_at)
+    db.add(db_domain)
+    db.commit()
+    db.refresh(db_domain)
+    return db_domain
+
+# Origin
+
+def get_origin(db: Session, origin_id: int):
+    return db.query(models.Origin).filter(models.Origin.id == origin_id).first()
+
+
+def get_origins(db: Session,domain_id, skip: int = 0, limit: int = 100):
+    query = db.query(models.Origin)
+    query = query.filter(models.Origin.domain_id == domain_id)
+    query = query.offset(skip).limit(limit)
+    return query.all()
+
+
+def create_origin(db: Session, origin: schemas.OriginCreate):
+    db_origin = models.Origin(
+            name = origin.name,
+            upstr_host = origin.upstr_host,
+            upstr_address = origin.upstr_address,
+            protocol = origin.protocol,
+            domain_id = origin.domain_id,
+            create_at = origin.create_at)
+    db.add(db_origin)
+    db.commit()
+    db.refresh(db_origin)
+    return db_origin

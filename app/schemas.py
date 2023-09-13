@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from typing import Optional
 # pydantic khai báo thuộc tính sử dụng (name: str):, còn SQLAlchemy  khai báo thuộc tính sử dụng =  (name = Column(String))
+
+# ITEM
 class ItemBase(BaseModel):
     title: str
     description: Optional[str] = None
@@ -16,6 +18,8 @@ class Item(ItemBase):
     class Config:
         from_attributes = True
 
+
+#CUSTOMER
 
 class CustomerBase(BaseModel):
     email: str
@@ -36,12 +40,27 @@ class Customer(CustomerBase):
 
     class Config:
         from_attributes = True
-#################################
-# khai bao cho cac admin
 
-class AdminBase(BaseModel):
-    email: str
-    password : str
-class AdminCreate(CustomerBase):
+# USER
+class UserCreate(BaseModel):
     name : str
+    email : str
+    password :str
     create_at: str
+
+# DOMAIN
+class DomainCreate(BaseModel):
+    name : str
+    status : str
+    domain_id: str
+    user_id : int
+    create_at : str
+
+# ORIGIN
+class OriginCreate(BaseModel):
+    name : str
+    upstr_host : str
+    upstr_address : str
+    protocol : str
+    domain_id : int
+    create_at : str

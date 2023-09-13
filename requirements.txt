@@ -1,6 +1,9 @@
-fastapi;
+fastapi[all];
 sqlalchemy;
 sqlalchemy.orm;
 uvicorn;
 pydantic;
 jinja2;
+requests;
+python-multipart;
+starlette-session;

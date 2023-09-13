@@ -4,6 +4,8 @@ from sqlalchemy.orm import relationship
 from app import database
 Base = database.Base
 
+# CUSTOMER
+
 
 class Customer(Base):
     __tablename__ = "customers"
@@ -14,6 +16,8 @@ class Customer(Base):
     is_active = Column(Boolean, default=True)
 
     items = relationship("Item", back_populates="owner")
+
+
 class Item(Base):
     __tablename__ = "items"
 
@@ -22,9 +26,11 @@ class Item(Base):
     description = Column(String, index=True)
     owner_id = Column(Integer, ForeignKey("customers.id"))
     owner = relationship("Customer", back_populates="items")
-    
-########################3
+
+
 # ADMIN
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -35,6 +41,7 @@ class User(Base):
     create_at = Column(String)
 
     domains = relationship("Domain", back_populates="user")
+
 
 class Domain(Base):
     __tablename__ = "domain"
@@ -47,6 +54,7 @@ class Domain(Base):
     create_at = Column(String)
     user = relationship("User", back_populates="domains")
     origins = relationship("Origin", back_populates="domain")
+
 
 class Origin(Base):
     __tablename__ = "origin"

@@ -51,7 +51,9 @@
             margin: 0 auto;
             padding: 20px;
         }
-
+        .alert {
+            color: red;
+        }
         h1 {
             font-size: 24px;
             margin-bottom: 20px;
@@ -98,7 +100,6 @@
             background-color: #555555;
         }
     </style>
-    <!-- <link rel="stylesheet" href="styles.css"> -->
 </head>
 
 <body>
@@ -106,52 +107,27 @@
     <nav>
         <ul>
             <li><a href="#">Trang chủ</a></li>
-
+            <li><a href="/sign-up">Đăng kí</a></li>
         </ul>
     </nav>
 </header>
     <div class="container">
         <h1>Đăng nhập</h1>
-        <form method="POST"> 
-            <div class="form-group" id="loginForm" >
-                <label for="email">Email:</label>
+        <form method="post" action="/sign-in">
+            <h1>Đăng nhập</h1>
+            <div>
+                <label for="email">Tài khoản:</label>
                 <input type="email" id="email" name="email" required>
+                <h5 class = "alert">{{message_email}}</h5>
             </div>
-            <div class="form-group">
+            <div>
                 <label for="password">Mật khẩu:</label>
                 <input type="password" id="password" name="password" required>
+                <h5 class = "alert">{{message_pass}}</h5>
             </div>
-            <p>Nếu chưa có tài khoản, vui lòng <a href="/sign-up">tạo tài khoản mới</a>.</p>
-            <button type="submit" name="submit">Đăng nhập </button>   
-        </form>
+            <button type="submit">Đăng nhập</button>
+            </form>
     </div>
-    <!-- <script>
-        const form = document.getElementById('loginForm');
-        const resultDiv = document.getElementById('result');
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                resultDiv.textContent = data.message;
-            } else {
-                resultDiv.textContent = 'Đăng nhập thất bại: ' + data.detail;
-            }
-        });
-    </script> -->
 </body>
 
 </html>

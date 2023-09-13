@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trang web với CSS nền xám</title>
+    <style>
+        /* Header Styles */
+        header {
+            background-color: #333333;
+            padding: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+
+        nav ul li {
+            color: #ffffff;
+            margin-right: 10px;
+        }
+
+        nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li:last-child {
+            margin-right: 0;
+            margin-left: auto;
+        }
+        nav ul li a:hover {
+            background-color: #555555;
+        }
+        /* Body */
+        body {
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .domain {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 30px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #dddddd;
+        }
+
+        th {
+            background-color: #333333;
+            color: #ffffff;
+        }
+
+        /* Add Domain Button */
+        .add-domain-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .add-domain-button button {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .add-domain-button button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Trang chủ</a></li>
+                <li>Hello {{user}}</li>
+                <li><a href="/logout">Đăng xuất</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="domain">
+        <h3>{{message}}</h3>
+    </div>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Tên miền</th>
+            <th>Trạng thái</th>
+            <th>ID</th>
+            <th>Ngày tạo</th>
+        </tr>
+        {% for domain in domains %}
+        <tr>
+            <td>{{domain.id}}</td>
+            <td><a href="/users/{{user_id}}/domains/{{domain.id}}/origins">{{domain.name}}</a></td>
+            <td>{{ "Activate" if domain.status|int == 1 else "Deactivate" }}</td>
+            <td>{{domain.domain_id}}</td>
+            <td>{{domain.create_at}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="add-domain-button">
+        <button onclick="window.location.href='/users/{{user_id}}/create-domain'">Thêm Domain</button>    </div>
+</body>
+</html>
