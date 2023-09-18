@@ -103,8 +103,8 @@ def create_user(db: Session, user: schemas.UserCreate):
 
 # Domain
 
-def get_domain(db: Session, domain_id: int):
-    return db.query(models.Domain).filter(models.Domain.id == domain_id).first()
+def get_domain(db: Session, id_domain: int):
+    return db.query(models.Domain).filter(models.Domain.id == id_domain).first()
 
 
 def get_domains(db: Session,user_id, skip: int = 0, limit: int = 100):
@@ -120,6 +120,7 @@ def create_domain(db: Session, domain: schemas.DomainCreate):
             name = domain.name,
             status = domain.status,
             user_id = domain.user_id,
+            domain_id = domain.domain_id,
             create_at = domain.create_at)
     db.add(db_domain)
     db.commit()

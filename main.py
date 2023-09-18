@@ -1,6 +1,6 @@
 from fastapi import Depends, FastAPI, HTTPException, Request, Form, Cookie
 from sqlalchemy.orm import Session
-from app import crud, models, schemas, database
+from app import crud, models, schemas, database, redis_connecttion
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -9,6 +9,13 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
 from datetime import datetime
+import uuid
+import redis
+
+def generate_domain_id():
+    domain_id = str(uuid.uuid4())
+    return domain_id
+
 templates = Jinja2Templates(directory="templates")
 
 SessionLocal = database.SessionLocal
@@ -45,7 +52,7 @@ async def homepage(request: Request):
 
 # get customers
 @app_server.get("/customers/", response_class=HTMLResponse, response_model=list[schemas.Customer])
-def read_customers(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db), ):
+def read_customers(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db) ):
     customers = crud.get_customers(db, skip=skip, limit=limit)
     return templates.TemplateResponse("customers.html", {"customers": customers, "request": request})
 
@@ -140,8 +147,13 @@ app_data.add_middleware(SessionMiddleware, secret_key="some-random-string")
 
 # Homepage
 @app_data.get("/", response_class=HTMLResponse)
-async def homepage(request: Request):
-    print("page home")
+async def homepage(request: Request,db: Session = Depends(get_db)):
+    # origin = crud.get_origin(db=db, origin_id=1)
+    # print(origin.domain.name)
+    # key = str(origin.domain.name)
+    # value = str(origin.protocol) + '|' + str(origin.upstr_host) + '|' + str(origin.upstr_address)
+    # r = redis_connecttion.get_redis_connection()
+    # r.set(key, value)
     return templates.TemplateResponse("admin-home.html", {"request": request})
 
 # Logout
@@ -216,8 +228,8 @@ def get_domains(request: Request,user_id:int, skip: int = 0, limit: int = 100, d
                 print (request.session['domain_ids'])
                 return templates.TemplateResponse("admin-domain.html", {"domains": domains,"user":request.session['username'],"user_id":user_id, "request": request})
             else:
-                return templates.TemplateResponse("admin-domain.html", {"domains": [],"message":"Dell có domains", "request": request})
-        return templates.TemplateResponse("admin-domain.html", {"domains": [],"message":"Dell phải domains của bạn", "request": request})
+                return templates.TemplateResponse("admin-domain.html", {"domains": domains,"user":request.session['username'],"user_id":user_id, "request": request})
+        return templates.TemplateResponse("admin-domain.html", {"domains": [],"user":request.session['username'],"user_id":user_id,"message":"Dell phải domains của bạn", "request": request})
     return RedirectResponse(url="/sign-in", status_code=302)
 
 # Create domain
@@ -234,10 +246,11 @@ def create_domain(request: Request,user_id:int, name: str = Form(...), db: Sessi
     domain = schemas.DomainCreate
     current_time = datetime.now()# Lấy thời gian hiện tại
     formatted_time = current_time.strftime("%d/%m/%Y") # Chuyển đổi thành chuỗi string với định dạng ngày/tháng/năm
-    print(formatted_time) # In thời gian đã định dạng
+    domain_id = generate_domain_id()
     domain.name = name
     domain.status = 1
     domain.user_id = user_id
+    domain.domain_id = domain_id
     domain.create_at = formatted_time
     crud.create_domain(db=db, domain=domain )
     return RedirectResponse(url=f"/users/{user_id}/domains", status_code=302)
@@ -247,25 +260,31 @@ def create_domain(request: Request,user_id:int, name: str = Form(...), db: Sessi
 def get_domains(request: Request,user_id:int, domain_id:int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     if request.session.get('id'):
         if request.session['id'] == user_id:
-            print("dang lay origins")
             origins = crud.get_origins(db, domain_id=domain_id, skip=skip, limit=limit)
             if origins:
-                print("co origin")
                 request.session['origin_ids'] = list()
                 for origin in origins:
                     request.session['origin_ids'].append(origin.id)
                 return templates.TemplateResponse("admin-origin.html", {"origins": origins,"user":request.session['username'],"user_id":user_id,"domain_id":domain_id, "request": request})
             else:
-                print("ko origin")
                 return templates.TemplateResponse("admin-origin.html", {"origins": origins,"user":request.session['username'],"user_id":user_id,"domain_id":domain_id,"message":"Dell có origins", "request": request})
         return templates.TemplateResponse("admin-domain.html", {"origins": [],"user":request.session['username'],"user_id":user_id,"domain_id":domain_id,"message":"Dell phải origins của bạn", "request": request})
     return RedirectResponse(url="/sign-in", status_code=302)
 
-@app_data.get("/Customers/", response_model=list[schemas.Customer])
-def read_Customers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    Customers = crud.get_customers(db, skip=skip, limit=limit)
-    return Customers
 
+@app_data.get("/users/{user_id}/domains/{domain_id}/origins/{origin_id}",response_model=list[schemas.OriginCreate])
+async def get_data_origin(request: Request,user_id:int, domain_id:int,origin_id:int, db: Session = Depends(get_db)):
+    print("dang lay data")
+    origin = crud.get_origin(db=db, origin_id=origin_id)
+    print(f"origin id: {origin.id}")
+
+    print(origin.domain.name)
+    key = str(origin.domain.name)
+    value = str(origin.protocol) + '|' + str(origin.upstr_host) + '|' + str(origin.upstr_address)
+    r = redis_connecttion.get_redis_connection()
+    r.flushall()
+    r.set(key, value)
+    return RedirectResponse(f"/users/{user_id}/domains/{domain_id}/origins",status_code=302)
 # Create domain
 @app_data.get("/users/{user_id}/domains/{domain_id}/create-origin",response_class=HTMLResponse)
 async def create_origin(request: Request,user_id:int,domain_id:int):
@@ -300,4 +319,4 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
 async def http_exception_handler(request: Request, exc: HTTPException):
     return templates.TemplateResponse("404.html", {"request": request}, status_code=exc.status_code)
 
-#  uvicorn main:app_data --reload --port 8000////uvicorn main:app2 --reload --port 8080
+#  uvicorn main:app_server --reload --port 8000////uvicorn main:app_data --reload --port 8080

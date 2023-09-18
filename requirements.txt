@@ -7,3 +7,4 @@ jinja2;
 requests;
 python-multipart;
 starlette-session;
+redis;
