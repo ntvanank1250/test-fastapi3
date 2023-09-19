@@ -91,6 +91,16 @@
         .add-origin-button button:hover {
             background-color: #0056b3;
         }
+
+        .table-heading {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .table-heading h2 {
+            color: #333333;
+        }
     </style>
 </head>
 <body>
@@ -105,6 +115,9 @@
     </header>
     
     <div class="origin">
+        <div class="table-heading">
+            <h2>Origin</h2>
+        </div>
         <h3>{{message}}</h3>
     </div>
     <button onclick="window.location.href = '/users/{{user_id}}/domains'">Back</button>
@@ -117,6 +130,7 @@
             <th>Protocol</th>
             <th>domain_id</th>
             <th>create_at</th>
+            <th>Status</th>
         </tr>
         {% for origin in origins %}
         <tr>
@@ -127,6 +141,7 @@
             <td>{{origin.protocol}}</td>
             <td>{{origin.domain_id}}</td>
             <td>{{origin.create_at}}</td>
+            <td>{{ "Activate" if origin.id|int == id_domain_default else "Deactivate" }}</td>
         </tr>
         {% endfor %}
     </table>

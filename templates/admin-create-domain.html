@@ -49,6 +49,10 @@
             color: #333333;
         }
 
+        .alert {
+            color: red;
+        }
+        
         .container {
             max-width: 400px;
             margin: 0 auto;
@@ -121,6 +125,7 @@
         <form action="/users/{{user_id}}/create-domain" method="POST">
             <label for="name">Ten Domain:</label>
             <input type="text" id="name" name="name" required>
+            <h5 class = "alert">{{message}}</h5>
             <button type="submit">Đăng ký</button>
         </form>
     </div>

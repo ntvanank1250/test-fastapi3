@@ -106,6 +106,8 @@ def create_user(db: Session, user: schemas.UserCreate):
 def get_domain(db: Session, id_domain: int):
     return db.query(models.Domain).filter(models.Domain.id == id_domain).first()
 
+def get_domain_by_name(db: Session, name: int):
+    return db.query(models.Domain).filter(models.Domain.name == name).first()
 
 def get_domains(db: Session,user_id, skip: int = 0, limit: int = 100):
     query = db.query(models.Domain)
