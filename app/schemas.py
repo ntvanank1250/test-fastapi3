@@ -10,7 +10,6 @@ class ItemBase(BaseModel):
 class ItemCreate(ItemBase):
     pass
 
-
 class Item(ItemBase):
     id: int
     owner_id: int
@@ -20,10 +19,8 @@ class Item(ItemBase):
 
 
 #CUSTOMER
-
 class CustomerBase(BaseModel):
     email: str
-
 
 class CustomerCreate(CustomerBase):
     password: str
@@ -37,7 +34,6 @@ class Customer(CustomerBase):
     id: int
     is_active: bool
     items: list[Item] = []
-
     class Config:
         from_attributes = True
 

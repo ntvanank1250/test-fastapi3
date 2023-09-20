@@ -1,15 +1,21 @@
 .title-items {
-    text-decoration: none; /* Loại bỏ gạch chân */
-    color: #000; /* Màu chữ */
-    font-weight: bold; /* Đậm chữ */
-    text-transform: uppercase;/* Viet hoa */
+    text-decoration: none;
+    /* Loại bỏ gạch chân */
+    color: #000;
+    /* Màu chữ */
+    font-weight: bold;
+    /* Đậm chữ */
+    text-transform: uppercase;
+    /* Viet hoa */
 }
+
 table {
     border-collapse: collapse;
     width: 100%;
 }
 
-th, td {
+th,
+td {
     text-align: left;
     padding: 8px;
 }

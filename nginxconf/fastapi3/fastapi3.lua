@@ -1,4 +1,4 @@
--- fastapi3.lua
+-- File fastapi3.lua
 -- package.path = package.path .. ";/usr/local/openresty/lualib/ngx/fastapi3/?.lua"
 
 local utils = require "utils"
@@ -10,7 +10,7 @@ local host = "hieudomain1.com"
 local str_host = tostring(host)
 local domain = getDataFromRedis(str_host)
 
--- Xu ly data
+-- Data processing
 local str = tostring(domain)
 local delimiter = "|"
 local parts_origin = split(str, delimiter)

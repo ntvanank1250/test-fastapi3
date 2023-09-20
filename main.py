@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, Request, Form
+from fastapi import Depends, FastAPI, HTTPException, Request
 from sqlalchemy.orm import Session
 from app import database
 from route.domain import router as domain_router
@@ -17,9 +17,11 @@ templates = Jinja2Templates(directory="templates")
 engine = database.engine
 app = FastAPI()
 
-# Đường dẫn tới thư mục chứa các tệp tĩnh
+# Static config
 app.mount("/static", StaticFiles(directory="static"), name="static")
+# Session setting
 app.add_middleware(SessionMiddleware, secret_key="some-random-string")
+# Include router
 app.include_router(domain_router)
 app.include_router(origin_router)
 app.include_router(user_router)
@@ -32,7 +34,7 @@ async def homepage(request: Request, db: Session = Depends(utils.get_db)):
         return RedirectResponse(url=f"/users/{id_user}/domains", status_code=302)
     return templates.TemplateResponse("admin-home.html", {"request": request})
 
-# page 404
+# 404 page
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     return templates.TemplateResponse("404.html", {"request": request}, status_code=exc.status_code)
@@ -41,4 +43,4 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
 async def http_exception_handler(request: Request, exc: HTTPException):
     return templates.TemplateResponse("404.html", {"request": request}, status_code=exc.status_code)
 
-# /// uvicorn main:app_data --reload --port 8080
+# /// uvicorn main:app --reload --port 8080
