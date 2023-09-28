@@ -5,14 +5,20 @@ from app import database
 Base = database.Base
 
 # CUSTOMER
+
+
 class Customer(Base):
     __tablename__ = "customers"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     email = Column(String, unique=True, index=True)
     password = Column(String)
     is_active = Column(Boolean, default=True)
-
+    list_image = Column(String)
+    image = Column(String)
     items = relationship("Item", back_populates="owner")
+
+# ITEM
+
 
 class Item(Base):
     __tablename__ = "items"
@@ -22,7 +28,9 @@ class Item(Base):
     owner_id = Column(Integer, ForeignKey("customers.id"))
     owner = relationship("Customer", back_populates="items")
 
-# ADMIN
+# USER
+
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -32,7 +40,10 @@ class User(Base):
     create_at = Column(String)
 
     domains = relationship("Domain", back_populates="user")
-    
+
+# DOMAIN
+
+
 class Domain(Base):
     __tablename__ = "domain"
 
@@ -44,6 +55,9 @@ class Domain(Base):
     create_at = Column(String)
     user = relationship("User", back_populates="domains")
     origins = relationship("Origin", back_populates="domain")
+
+# ORIGIN
+
 
 class Origin(Base):
     __tablename__ = "origin"

@@ -1,15 +1,70 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>User List</title>
-    <link rel="stylesheet" href="../static/css/users.css">  
 
+<head>
+    <title>Customer List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .title-customers {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .add-customer-button {
+            margin-bottom: 20px;
+        }
+
+        .add-customer-button button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .add-customer-button button:hover {
+            background-color: #45a049;
+        }
+
+        .avatar-image {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>User List</h1>
-    <div class="add-user-button">
+    <h1>Customer List</h1>
+    <div class="add-customer-button">
         <button onclick="window.location.href = '/'">Back</button>
-        <button onclick="window.location.href='/add-user'">Thêm User</button>
+        <button onclick="window.location.href='/create-customer'">Thêm Customer</button>
     </div>
     <table>
         <tr>
@@ -18,14 +73,15 @@
             <th>Activate</th>
             <th>Avatar</th>
         </tr>
-        {% for user in users %}
+        {% for customer in customers %}
         <tr>
-            <td>{{ user.id }}</td>
-            <td><a class="title-users" href="/users/{{ user.id }}">{{ user.email }}</a></td>
-            <td>{{ "Activate" if user.is_active|int == 1 else "Deactivate" }}</td> 
-            <td><img src="../static/images/girl{{user.id}}.jpg" alt="tho-con" style="width:100px;height:100px;"></td>     
+            <td>{{ customer.id }}</td>
+            <td><a class="title-customers" href="/customers/{{ customer.id }}">{{ customer.email }}</a></td>
+            <td>{{ "Activate" if customer.is_active|int == 1 else "Deactivate" }}</td>
+            <td><img src="../{{customer.image}}" alt="tho-con" style="width:100px;height:100px;"></td>
         </tr>
         {% endfor %}
     </table>
 </body>
+
 </html>

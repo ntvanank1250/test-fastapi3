@@ -101,6 +101,23 @@
         .table-heading h2 {
             color: #333333;
         }
+        .button-td {
+            text-align: center;
+        }
+
+        .button-td button {
+            background-color: #333333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .button-td button:hover {
+            background-color: #333333;
+        }
     </style>
 </head>
 <body>
@@ -131,6 +148,7 @@
             <th>domain_id</th>
             <th>create_at</th>
             <th>Status</th>
+            <th></th>
         </tr>
         {% for origin in origins %}
         <tr>
@@ -142,6 +160,7 @@
             <td>{{origin.domain_id}}</td>
             <td>{{origin.create_at}}</td>
             <td>{{ "Activate" if origin.id|int == id_domain_default else "Deactivate" }}</td>
+            <td class="button-td"><button onclick="window.location.href = '/users/{{user_id}}/domains/{{domain_id}}/origins/{{origin.id}}/clear-cache'">Clear Cache Image</button></td>
         </tr>
         {% endfor %}
     </table>

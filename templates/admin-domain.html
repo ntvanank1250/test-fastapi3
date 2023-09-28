@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Domains</title>
     <style>
@@ -26,13 +27,16 @@
             border-radius: 3px;
             transition: background-color 0.3s ease;
         }
+
         nav ul li:last-child {
             margin-right: 0;
             margin-left: auto;
         }
+
         nav ul li a:hover {
             background-color: #555555;
         }
+
         /* Body */
         body {
             background-color: #f2f2f2;
@@ -62,7 +66,8 @@
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             padding: 10px;
             text-align: left;
             border-bottom: 1px solid #dddddd;
@@ -87,7 +92,7 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        
+
         .add-domain-button button:hover {
             background-color: #0056b3;
         }
@@ -98,12 +103,13 @@
             margin-top: 20px;
             margin-bottom: 20px;
         }
-        
+
         .table-heading h2 {
             color: #333333;
         }
     </style>
 </head>
+
 <body>
     <header>
         <nav>
@@ -136,9 +142,11 @@
             <td>{{domain.domain_id}}</td>
             <td>{{domain.create_at}}</td>
         </tr>
-        {% endfor %}    
+        {% endfor %}
     </table>
     <div class="add-domain-button">
-        <button onclick="window.location.href='/users/{{user_id}}/create-domain'">Thêm Domain</button>    </div>
+        <button onclick="window.location.href='/users/{{user_id}}/create-domain'">Thêm Domain</button>
+    </div>
 </body>
+
 </html>

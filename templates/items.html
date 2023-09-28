@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Items List</title>
-    <link rel="stylesheet" href="../static/css/items.css">  
+    <link rel="stylesheet" href="../static/css/items.css">
 </head>
+
 <body>
     <h1>Items List</h1>
     <button onclick="window.location.href = '/'">Back</button>
@@ -19,9 +21,10 @@
             <td>{{ item.id }}</td>
             <td><a class="title-items" href="/items/{{ item.id }}">{{ item.title }}</a></td>
             <td>{{ item.description }}</td>
-            <td><img src="../static/images/item{{item.id}}.jpg" alt="tho-con" style="width:100px;height:150px;"></td> 
+            <td><img src="../static/images/item{{item.id}}.jpg" alt="tho-con" style="width:100px;height:150px;"></td>
         </tr>
         {% endfor %}
     </table>
 </body>
+
 </html>

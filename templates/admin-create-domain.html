@@ -12,6 +12,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         /* Header Styles */
         header {
             background-color: #333333;
@@ -34,10 +35,12 @@
             border-radius: 3px;
             transition: background-color 0.3s ease;
         }
+
         nav ul li:last-child {
             margin-right: 0;
             margin-left: auto;
         }
+
         nav ul li a:hover {
             background-color: #555555;
         }
@@ -52,7 +55,7 @@
         .alert {
             color: red;
         }
-        
+
         .container {
             max-width: 400px;
             margin: 0 auto;
@@ -118,17 +121,17 @@
             </ul>
         </nav>
     </header>
-    
+
     <button onclick="window.location.href = '/users/{{user_id}}/domains'">Back</button>
     <div class="container">
         <h1>Dang ky Domain</h1>
         <form action="/users/{{user_id}}/create-domain" method="POST">
             <label for="name">Ten Domain:</label>
             <input type="text" id="name" name="name" required>
-            <h5 class = "alert">{{message}}</h5>
+            <h5 class="alert">{{message}}</h5>
             <button type="submit">Đăng ký</button>
         </form>
     </div>
 </body>
 
-</html> 
+</html>

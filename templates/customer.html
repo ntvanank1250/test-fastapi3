@@ -1,31 +1,88 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Customer</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
         .title-user {
             text-decoration: none;
             color: #000;
             font-weight: bold;
         }
+
         .description {
             margin-top: 10px;
         }
+
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
+
 <body>
-    <h1>User Details</h1>
-    <button onclick="window.location.href = '/users'">Back</button>
+    <h1>Customer Details</h1>
+    <button onclick="window.location.href = '/customers'">Back</button>
 
     <table>
         <tr>
             <th>Email:</th>
-            <th>{{ user.email }}</th>
+            <td>{{ customer.email }}</td>
         </tr>
         <tr>
             <th>Active:</th>
-            <th>{{ "Activate" if user.is_active|int == 1 else "Deactivate" }}</th>
+            <td>{{ "Activate" if customer.is_active|int == 1 else "Deactivate" }}</td>
+        </tr>
+        <tr>
+            <th>Image:</th>
+            <td>
+                <img src="../{{customer.image}}" alt="Avatar" style="width:100px;height:100px;">
+                <br>
+                <form action="/upload-image-customer/{{customer.id}}" method="post" enctype="multipart/form-data">
+                    <input type="file" name="image">
+                    <button type="submit">Upload Image</button>
+
+                </form>
+                <form action="/purge-cache/{{customer.id}}" method="post"><button type="submit">Purge Cache</button>
+                </form>
+            </td>
         </tr>
     </table>
 </body>
+
 </html>
