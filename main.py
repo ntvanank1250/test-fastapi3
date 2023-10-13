@@ -52,4 +52,4 @@ async def http_exception_handler(request: Request, exc: HTTPException):
     return templates.TemplateResponse("404.html", {"request": request}, status_code=exc.status_code)
 # 404 page
 
-# uvicorn main:app --reload --port 8080
+# uvicorn main:app --reload --port 8080 --host 0.0.0.0

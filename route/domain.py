@@ -7,12 +7,12 @@ from config import *
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
+from typing import List
 
 templates = Jinja2Templates(directory="templates")
 router = APIRouter()
 
-
-@router.get("/users/{user_id}/domains", response_model=list[schemas.DomainCreate])
+@router.get("/users/{user_id}/domains", response_model=List[schemas.DomainCreate])
 def get_domains(request: Request, user_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     id_user = check_session(request=request, user_id=user_id)
     if id_user:

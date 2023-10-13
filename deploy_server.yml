@@ -1,0 +1,33 @@
+---
+- name: Install server package
+  hosts:
+    - server1
+  gather_facts: false
+  become: yes
+
+  tasks:
+    - name: Upload file
+      copy:
+        src: /home/hieudd/Code/test-fastapi3/{{ item }}
+        dest: /home/hieudd/server_fastapi/
+      with_items:
+        - app
+        - route
+        - static
+        - templates
+        - config.py
+        - database_domain.db
+        - main.py
+        - requirements.txt
+        - utils.py
+      tags: upload 
+
+    - name: Create env
+      shell: /usr/bin/python3 -m venv env_server
+      args:
+        chdir: /home/hieudd/server_fastapi
+      tags: env
+
+    - name: Install requirements
+      shell: /home/hieudd/server_fastapi/env_server/bin/pip install -r /home/hieudd/server_fastapi/requirements.txt
+      tags: env

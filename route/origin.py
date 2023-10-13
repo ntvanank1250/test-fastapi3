@@ -6,12 +6,13 @@ from utils import *
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
+from typing import List
 
 templates = Jinja2Templates(directory="templates")
 router = APIRouter()
 
 
-@router.get("/users/{user_id}/domains/{domain_id}/origins", response_model=list[schemas.OriginCreate])
+@router.get("/users/{user_id}/domains/{domain_id}/origins", response_model=List[schemas.OriginCreate])
 def get_domains(request: Request, user_id: int, domain_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     id_user = check_session(request=request, user_id=user_id)
     if id_user:
@@ -25,7 +26,7 @@ def get_domains(request: Request, user_id: int, domain_id: int, skip: int = 0, l
 # Get origins
 
 
-@router.get("/users/{user_id}/domains/{domain_id}/origins/{origin_id}", response_model=list[schemas.OriginCreate])
+@router.get("/users/{user_id}/domains/{domain_id}/origins/{origin_id}", response_model=List[schemas.OriginCreate])
 async def get_data_origin(request: Request, user_id: int, domain_id: int, origin_id: int, db: Session = Depends(get_db)):
     id_user = check_session(request=request, user_id=user_id)
     if id_user:

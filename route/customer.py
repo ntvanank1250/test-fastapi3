@@ -1,6 +1,6 @@
 from fastapi import Depends, FastAPI, HTTPException, Request, APIRouter, Form, UploadFile, File
 from pydantic import BaseModel
-from rabbitmq import pub
+# from rabbitmq import pub
 from fastapi import Depends, Request
 from sqlalchemy.orm import Session
 from app import crud, schemas
@@ -74,16 +74,16 @@ async def upload_image(customer_id: int, image: UploadFile = File(...), db: Sess
 # Upload image
 
 
-@router.post("/purge-cache/{customer_id}")
-async def purge_cache(request: Request, customer_id: int, db: Session = Depends(get_db)):
-    db_customer = crud.get_customer(db, customer_id=customer_id)
-    list_image = db_customer.list_image.split("|")
-    for image in list_image:
-        if image:
-            path_image = "httpGEThieudomain1.com/" + image
-            pub.send_cache_clear_request(path=path_image)
-    pub.send_cache_clear_request(
-        path=f"httpGEThieudomain1.com/customers/{customer_id}")
-    crud.delete_list_image(db, customer_id=customer_id)
-    return RedirectResponse(url=f"/customers/{customer_id}", status_code=302)
-# Purge cache image
+# @router.post("/purge-cache/{customer_id}")
+# async def purge_cache(request: Request, customer_id: int, db: Session = Depends(get_db)):
+#     db_customer = crud.get_customer(db, customer_id=customer_id)
+#     list_image = db_customer.list_image.split("|")
+#     for image in list_image:
+#         if image:
+#             path_image = "httpGEThieudomain1.com/" + image
+#             pub.send_cache_clear_request(path=path_image)
+#     pub.send_cache_clear_request(
+#         path=f"httpGEThieudomain1.com/customers/{customer_id}")
+#     crud.delete_list_image(db, customer_id=customer_id)
+#     return RedirectResponse(url=f"/customers/{customer_id}", status_code=302)
+# # Purge cache image

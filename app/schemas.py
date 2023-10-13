@@ -46,7 +46,7 @@ class CustomerImage(CustomerBase):
 class Customer(CustomerBase):
     id: int
     is_active: bool
-    items: list[Item] = []
+    items: list
 
     class Config:
         from_attributes = True

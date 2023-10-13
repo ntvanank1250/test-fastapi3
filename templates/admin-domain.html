@@ -3,110 +3,8 @@
 
 <head>
     <title>Domains</title>
+    <link rel="stylesheet" href="../../static/css/domains.css">
     <style>
-        /* Header Styles */
-        header {
-            background-color: #333333;
-            padding: 10px;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-        }
-
-        nav ul li {
-            color: #ffffff;
-            margin-right: 10px;
-        }
-
-        nav ul li a {
-            color: #ffffff;
-            text-decoration: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            transition: background-color 0.3s ease;
-        }
-
-        nav ul li:last-child {
-            margin-right: 0;
-            margin-left: auto;
-        }
-
-        nav ul li a:hover {
-            background-color: #555555;
-        }
-
-        /* Body */
-        body {
-            background-color: #f2f2f2;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .domain {
-            text-align: center;
-            margin-top: 50px;
-            margin-bottom: 30px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #dddddd;
-        }
-
-        th {
-            background-color: #333333;
-            color: #ffffff;
-        }
-
-        /* Add Domain Button */
-        .add-domain-button {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .add-domain-button button {
-            background-color: #007bff;
-            color: #ffffff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .add-domain-button button:hover {
-            background-color: #0056b3;
-        }
-
-
-        .table-heading {
-            text-align: center;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
-        .table-heading h2 {
-            color: #333333;
-        }
     </style>
 </head>
 
@@ -146,6 +44,10 @@
     </table>
     <div class="add-domain-button">
         <button onclick="window.location.href='/users/{{user_id}}/create-domain'">Thêm Domain</button>
+    </div>
+    <div>
+        <img src="../../static/images/tho1.png" alt="tho-con" style="width:304px;height:228px;">
+        <img src="../../static/images/tho2.png" alt="tho-con" style="width:304px;height:228px;">
     </div>
 </body>
 
