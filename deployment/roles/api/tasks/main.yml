@@ -1,0 +1,71 @@
+--- 
+
+- name: Create api-edge-service directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: nobody
+    group: root
+    mode: 0775
+  with_items:
+    - /srv/api-web-demo
+  become: yes
+  tags: 
+    - create_web
+
+- name: Copy code api
+  copy: >
+    src=../../../../{{ item }}
+    dest=/srv/api-web-demo/
+    mode=0755
+  with_items:
+    - api
+  become: yes
+  tags: 
+    - create_web
+    - update_api
+
+- name: Initiate virtualenv
+  shell:
+    cmd: virtualenv venv
+    chdir: /srv/api-web-demo
+  become: yes
+  tags: 
+    - create_web
+    - create_env
+
+- name: Upgrade pip
+  shell:
+    cmd: sudo /srv/api-web-demo/venv/bin/pip install --upgrade pip
+    chdir: /srv/api-web-demo
+  become: yes
+  tags: 
+    - create_web
+
+- name: Install packet
+  shell:
+    cmd: sudo /srv/api-web-demo/venv/bin/pip install -r requirements.txt
+    chdir: /srv/api-web-demo/api
+  tags: 
+    - create_web
+    - create_env
+
+- name: Copy file supervisor config
+  template: >
+    src=../files/{{ item }}
+    dest=/etc/supervisor/conf.d/
+  with_items:
+    - api_web_demo.conf
+  become: yes
+  tags: 
+    - create_web
+    - update_api
+
+- name: Restart process
+  supervisorctl:
+    name: api_web_demo
+    state: restarted
+  become: yes
+  tags: 
+    - create_web
+    - update_api
