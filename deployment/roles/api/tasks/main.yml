@@ -49,6 +49,7 @@
   tags: 
     - create_web
     - create_env
+    - update_api
 
 - name: Copy file supervisor config
   template: >
