@@ -2,3 +2,5 @@
 [2.692ms] - for query from DB ||  [3.747] - 200 - http://0.0.0.0:8080/users/1/domains - a65a4882-05f1-4f6e-9391-3983dc9bdfad
 [34.943ms] - for query from DB ||  [45.338ms] - 200 - http://0.0.0.0:8080/users/1/domains/1/origins - f61fc60f-bab7-4b1f-afae-b24f54efe1a2
 [12.353ms] - for query from db ||  [1.735ms] - for query from db ||  [5.676ms] - 200 - http://127.0.0.1:8080/users/1/domains - 7c3f1f70-25b7-4877-9815-c68080d9c25e
+[37.664ms] - for query from db ||  [7.002ms] - for query from db ||  [41.992ms] - 200 - http://127.0.0.1:8000/users/1/domains - 3583c41f-76eb-4221-a46a-70d6351f3f09
+[4.155ms] - for query from db ||  
