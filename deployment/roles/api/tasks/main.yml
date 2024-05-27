@@ -8,48 +8,74 @@
     group: root
     mode: 0775
   with_items:
-    - /srv/api-web-demo
+    - /srv/api_web_demo
   become: yes
   tags: 
     - create_web
 
-- name: Copy code api
+- name: Copy code api 
   copy: >
-    src=../../../../{{ item }}
-    dest=/srv/api-web-demo/
+    src=../../../../api/{{ item }}
+    dest=/srv/api_web_demo/
     mode=0755
   with_items:
-    - api
+    - logs 
+    - nginxconf 
+    - rabbitmq 
+    - route 
+    - static 
+    - templates 
+    - __init__.py 
+    - config.py 
+    - crud.py 
+    - database.py 
+    - main.py 
+    - models.py 
+    - redis_connecttion.py 
+    - requirements.txt 
+    - schemas.py 
+    - utils.py
   become: yes
   tags: 
     - create_web
-    - update_api
+    - update_code
+
+- name: Sync database
+  copy: >
+    src=../../../../api/{{ item }}
+    dest=/srv/api_web_demo/database/
+    mode=0755
+  with_items:
+      - database_domain.db 
+  become: yes
+  tags: 
+    - create_web
+    - update_database
 
 - name: Initiate virtualenv
   shell:
-    cmd: virtualenv venv
-    chdir: /srv/api-web-demo
+    cmd: python3 -m venv venv
+    chdir: /srv/api_web_demo
   become: yes
   tags: 
     - create_web
     - create_env
 
-- name: Upgrade pip
+- name: Upgrade pips
   shell:
-    cmd: sudo /srv/api-web-demo/venv/bin/pip install --upgrade pip
-    chdir: /srv/api-web-demo
+    cmd: sudo /srv/api_web_demo/venv/bin/pip install --upgrade pip
+    chdir: /srv/api_web_demo/
   become: yes
   tags: 
     - create_web
 
 - name: Install packet
   shell:
-    cmd: sudo /srv/api-web-demo/venv/bin/pip install -r requirements.txt
-    chdir: /srv/api-web-demo/api
+    cmd: sudo /srv/api_web_demo/venv/bin/pip install -r requirements.txt
+    chdir: /srv/api_web_demo/
   tags: 
     - create_web
-    - create_env
-    - update_api
+    - update_code
 
 - name: Copy file supervisor config
   template: >
@@ -60,7 +86,7 @@
   become: yes
   tags: 
     - create_web
-    - update_api
+    - update_code
 
 - name: Restart process
   supervisorctl:
@@ -69,4 +95,4 @@
   become: yes
   tags: 
     - create_web
-    - update_api
+    - update_code

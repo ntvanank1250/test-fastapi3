@@ -6,19 +6,18 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.responses import RedirectResponse
-from api import database
-from api.route.customer import router as customer_router
-from api.route.domain import router as domain_router
-from api.route.origin import router as origin_router
-from api.route.user import router as user_router
-from api import utils, config
+import database, utils, config
+from route.customer import router as customer_router
+from route.domain import router as domain_router
+from route.origin import router as origin_router
+from route.user import router as user_router
 
-templates = Jinja2Templates(directory="api/templates")
+templates = Jinja2Templates(directory="./templates")
 engine = database.engine
 app = FastAPI()
 
 # Static config
-app.mount("/static", StaticFiles(directory="api/static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Session setting
 app.add_middleware(SessionMiddleware, secret_key="some-random-string")

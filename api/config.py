@@ -1,6 +1,6 @@
 
-from api import schemas
-from api.utils import *
+import schemas
+from utils import *
 
 
 # Check session

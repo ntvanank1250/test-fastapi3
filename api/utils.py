@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from api import database
+import database
 from functools import wraps
 from fastapi import status
 

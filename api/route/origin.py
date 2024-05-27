@@ -1,23 +1,25 @@
 from fastapi import APIRouter, Depends, Request, Form
 from sqlalchemy.orm import Session
-from api import crud, schemas, redis_connecttion
-from api.config import *
-from api.utils import *
+from schemas import *
+from crud import *
+from utils import *
+from config import *
+from redis_connecttion import *
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from typing import List
 
-templates = Jinja2Templates(directory="api/templates")
+templates = Jinja2Templates(directory="./templates")
 router = APIRouter()
 
 
-@router.get("/users/{user_id}/domains/{domain_id}/origins", response_model=List[schemas.OriginCreate])
+@router.get("/users/{user_id}/domains/{domain_id}/origins", response_model=List[OriginCreate])
 @tracking_time_api
 def get_domains(request: Request, user_id: int, domain_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     id_user = check_session(request=request, user_id=user_id)
     if id_user:
-        origins = crud.get_origins(
+        origins = get_origins(
             db, domain_id=domain_id, skip=skip, limit=limit)
         r = redis_connecttion.get_redis_connection()
         id_domain_default = 0
@@ -27,12 +29,12 @@ def get_domains(request: Request, user_id: int, domain_id: int, skip: int = 0, l
 # Get origins
 
 
-@router.get("/users/{user_id}/domains/{domain_id}/origins/{origin_id}", response_model=List[schemas.OriginCreate])
+@router.get("/users/{user_id}/domains/{domain_id}/origins/{origin_id}", response_model=List[OriginCreate])
 @tracking_time_api
 async def get_data_origin(request: Request, user_id: int, domain_id: int, origin_id: int, db: Session = Depends(get_db)):
     id_user = check_session(request=request, user_id=user_id)
     if id_user:
-        origin = crud.get_origin(db=db, origin_id=origin_id)
+        origin = get_origin(db=db, origin_id=origin_id)
         key = str(origin.domain.name)
         value = str(origin.protocol) + '|' + \
             str(origin.upstr_host) + '|' + str(origin.upstr_address)
@@ -59,12 +61,12 @@ async def create_origin(request: Request, user_id: int, domain_id: int):
 # Create origin form
 
 
-@router.post("/users/{user_id}/domains/{domain_id}/create-origin", response_model=schemas.OriginCreate)
+@router.post("/users/{user_id}/domains/{domain_id}/create-origin", response_model=OriginCreate)
 @tracking_time_api
 def create_origin( user_id, domain_id: int, name: str = Form(...), upstr_host: str = Form(...), upstr_address: str = Form(...), protocol: str = Form(...), db: Session = Depends(get_db)):
     origin = create_origin(name=name, upstr_host=upstr_host,
                                   upstr_address=upstr_address, protocol=protocol, domain_id=domain_id)
-    crud.create_origin(db=db, origin=origin)
+    create_origin(db=db, origin=origin)
     return RedirectResponse(url=f"/users/{user_id}/domains/{domain_id}/origins", status_code=302)
 # Create origin
 
